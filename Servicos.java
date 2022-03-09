@@ -7,16 +7,18 @@ public class Servicos {
     private String servico;
     private float valor;
     private boolean pagto;
+    private Cliente cliente;
 
     Scanner Teclado = new Scanner(System.in);
     
     
-    public Servicos(Animal animal, int data, String servico, float valor, boolean pagto) {
+    public Servicos(Animal animal, int data, String servico, float valor, boolean pagto, Cliente cliente) {
         this.animal = animal;
         this.data = data;
         this.servico = servico;
         this.valor = valor;
         this.pagto = pagto;
+        this.cliente = cliente;
     }
 
 
@@ -69,54 +71,55 @@ public class Servicos {
         this.pagto = pagto;
     }
 
-    private float valservico = 0;
+    private float valservico = 0f;
 
     public void InlcuiServico(){
 
         if(this.animal.isStatus() != false){
-            if(this.animal.cliente.getSaldo() < 0){
+            if(this.cliente.getSaldo() != 0){
                 Boolean continuar = true;
                 while(continuar == true){
-                    System.out.println("Os serviços disponíveis são: 1 - Banho = R$ 20,00, \n 2 - Tosa = R$ 15,00, \n 3 - Diária = R$ 80,00 \n 4 - Vacina = R$ 50,00 \n 0 - Encerrar pedido");
-                    System.out.println("Serviço a ser adicionado: ");
+                    System.out.println("\nOs serviços disponíveis são: \n1 - Banho = R$ 20,00, \n 2 - Tosa = R$ 15,00, \n 3 - Diária = R$ 80,00 \n 4 - Vacina = R$ 50,00 \n 0 - Encerrar pedido");
+                    System.out.println("\n\nServiço a ser adicionado: ");
                     int servico = Teclado.nextInt();
-                    
-                    boolean erro = false;
+
+                    int erro = 0;
 
                     switch (servico) {
                         case 1:
-                            valservico = valservico + 20;
+                            valservico = valservico + 20f;
                             break;
                         
                         case 2:
-                            valservico = valservico + 15;
+                            valservico = valservico + 15f;
                             break;
                         
                         case 3:
-                            valservico = valservico + 80;
+                            valservico = valservico + 80f;
                             break;
 
                         case 4:
-                            valservico = valservico + 50;
+                            valservico = valservico + 50f;
                             break;
                         case 0:
                             continuar = false;
                             break;
                         default:
                             System.out.println("Opção inesistente!");
-                            erro = true;
+                            erro = 1;
                             break;
                     }
-                    if(erro = false) System.out.println("Serviço aicionado com sucesso!");
+                    if(erro == 0) System.out.println("\n\nServiço aicionado com sucesso!");
                     
-                    if(pagto = true){
-                        this.animal.cliente.setSaldo(this.animal.cliente.getSaldo() - valservico);
-                        valservico = 0;
-                    }
-                    else {
-                        System.out.println("Para realizar o débito, é necessário atualizar o pagamento. Digite 1 para atualizar agora, ou 0 para cancelar a operação.");
-                        if(Teclado.nextInt() == 1) AtualizaPagto();
-                    }
+                }
+                
+                if(this.pagto){
+                    this.cliente.setSaldo(this.cliente.getSaldo() - valservico);
+                    valservico = 0;
+                }
+                else {
+                    System.out.println("Para realizar o débito, é necessário atualizar o pagamento. Digite 1 para atualizar agora, ou 0 para cancelar a operação.");
+                    if(Teclado.nextInt() == 1) AtualizaPagto();
                 }
             }
             else System.out.println("O cliente está negativado ou não possui saldo.");
@@ -125,21 +128,20 @@ public class Servicos {
     }
 
     void AtualizaPagto(){
-        if(valservico >= 0){
-            System.out.println("Não há pagamentos pendentes!");
+        if (this.valservico <= 0){
+            System.out.println("Não há mais pagamentos pendentes!");
         }
-        else{
+        else {
             pagto = true;
             System.out.println("O pagamento foi atualizado com sucesso. Deseja realizar o débito agora?[Y/n]");
             if(Teclado.next().equals("y")){
                 if(pagto = true){
-                    this.animal.cliente.setSaldo(this.animal.cliente.getSaldo() - valservico);
+                    this.cliente.setSaldo(this.cliente.getSaldo() - valservico);
                     valservico = 0;
                 }
             }
             else System.out.println("Operação finalizada.");
         }
     }
-
 
 }
